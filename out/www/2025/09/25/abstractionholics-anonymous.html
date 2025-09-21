@@ -31,12 +31,14 @@ that one’s usage of abstraction has made their life unmanageable.</p>
 compulsion toward abstraction.</p>
 <h2 id="the-dream-stream">The Dream Stream</h2>
 <p>Let’s take a step back. I think event streaming (à la Apache Kafka)
-is great. When a problem can be decomposed into a pipeline of simple
-operations, then one can handle massive throughput with relatively
+is great. Systems are easy to reason about when the problem is decomposed
+into a pipeline of transformations. Just as a compiler has well defined stages,
+which can be reasoned about independently, many kinds of problems which require
+high-throughput and low latency can be solved by building relatively
 simple components connected by partitioned and ordered event streams.
-This design allows the components in the pipeline to add batching,
-caching and maintain idempotency with relatively little effort. However,
-I’ve yet to find a system which provides all of the following:</p>
+By doing so, the components in the pipeline can add batching,
+caching and maintain idempotency with little effort. However, I’ve yet to find
+a streaming system which provides all of the following:</p>
 <ul>
 <li>User-defined partitioning.</li>
 <li>Within a partition, in-order delivery.</li>

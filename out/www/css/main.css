@@ -1,3 +1,11 @@
+html {
+    font-family: serif;
+    font-size-adjust: ex-height 0.53;
+    -webkit-text-size-adjust: 100%;
+    --line-height: 1.7rem;
+    line-height: var(--line-height);
+}
+
 body {
     max-width: 80ch;
     padding: 2ch;

@@ -5,7 +5,10 @@ on:
       - main
 
 jobs:
-  CI:
+  deploy:
+    environment:
+      name: github-pages
+
     runs-on: ubuntu-latest
     permissions:
       pages: write

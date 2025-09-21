@@ -1,4 +1,4 @@
-name: CI
+name: Update Site
 on:
   push:
     branches:

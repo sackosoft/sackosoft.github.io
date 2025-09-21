@@ -1,5 +1,32 @@
+body {
+    max-width: 80ch;
+    padding: 2ch;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .title {
 }
 
 .post-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+.post-list > li > h2 {
+    margin-top: 0;
+}
+
+.meta {
+    display: block;
+    font-size: 1.5rem;
+    font-family: sans-serif;
+}
+
+article > * {
+    max-width: 65ch;
+}
+
+img {
+    max-width: 65ch;
 }

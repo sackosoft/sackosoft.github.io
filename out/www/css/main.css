@@ -32,7 +32,11 @@ body {
 }
 
 article > * {
-    max-width: 65ch;
+    max-width: 55ch;
+}
+
+article figure {
+    margin: 0;
 }
 
 img {

@@ -15,22 +15,22 @@
       </nav>
     </header>
     <main>
-            <article>
-                <header>
-<h1 id="abstractionholics-anonymous">Abstractionholics Anonymous</h1>
-<time class="meta" datetime="2025-09-25">Sep 25, 2025</time>
-                </header>
-<p>Hello, everyone, my name is Theodore, and I’m an
+      <article>
+        <header>
+          <h1 id="abstractionholics-anonymous">Abstractionholics Anonymous</h1>
+          <time class="meta" datetime="2025-09-25">Sep 25, 2025</time>
+        </header>
+        <p>Hello, everyone, my name is Theodore, and I’m an
 Abstractionholic.</p>
-<blockquote>
-<p>The first step to recovery is admitting that one has a problem.
+        <blockquote>
+          <p>The first step to recovery is admitting that one has a problem.
 Admitting that one is powerless over their desire to abstract. Admitting
 that one’s usage of abstraction has made their life unmanageable.</p>
-</blockquote>
-<p>I’m here to admit that I have a problem. I am powerless over my
+        </blockquote>
+        <p>I’m here to admit that I have a problem. I am powerless over my
 compulsion toward abstraction.</p>
-<h2 id="the-dream-stream">The Dream Stream</h2>
-<p>Let’s take a step back. I think event streaming (à la Apache Kafka)
+        <h2 id="the-dream-stream">The Dream Stream</h2>
+        <p>Let’s take a step back. I think event streaming (à la Apache Kafka)
 is great. Systems are easy to reason about when the problem is decomposed
 into a pipeline of transformations. Just as a compiler has well defined stages,
 which can be reasoned about independently, many kinds of problems which require
@@ -39,72 +39,76 @@ simple components connected by partitioned and ordered event streams.
 By doing so, the components in the pipeline can add batching,
 caching and maintain idempotency with little effort. However, I’ve yet to find
 a streaming system which provides all of the following:</p>
-<ul>
-<li>User-defined partitioning.</li>
-<li>Within a partition, in-order delivery.</li>
-<li>Throughput up to millions of requests per second.</li>
-<li><strong>Correctness-preserving horizontal scaling</strong>.</li>
-</ul>
-<p>Scaling a topic by adding partitions is commonly supported; however,
+        <ul>
+          <li>User-defined partitioning.</li>
+          <li>Within a partition, in-order delivery.</li>
+          <li>Throughput up to millions of requests per second.</li>
+          <li><strong>Correctness-preserving horizontal scaling</strong>.</li>
+        </ul>
+        <p>Scaling a topic by adding partitions is commonly supported; however,
 applications which rely on user-defined partitioning and are sensitive
 to event order may struggle to gracefully handle events moving between
 partitions.</p>
-<p>Teams have a few options to handle this, none of which seem
+        <p>Teams have a few options to handle this, none of which seem
 ideal:</p>
-<ul>
-<li>Over provision partitions to avoid needing to perform scaling.
+        <ul>
+          <li>Over provision capacity and never adjust scaling.
 Underutilize these resources indefinitely.
-<ul>
-<li>If you’re trying to empty out an uncomfortably full bank account,
+            <ul>
+              <li>If you’re trying to empty out an uncomfortably full bank account,
 this is a great option for you.</li>
-</ul></li>
-<li>Remove user-defined partitioning, rely on external systems to manage
+            </ul></li>
+          <li>Remove user-defined partitioning, rely on external systems to manage
 operations.
-<ul>
-<li>In-memory caching, batching and idempotency become difficult or
+            <ul>
+              <li>In-memory caching, batching and idempotency become difficult or
 impossible. Concurrent consumers must coordinate transactions, and this
 contention is expensive to scale.</li>
-</ul></li>
-<li>Build a stream management layer to handle upgrades.
-<ul>
-<li>I’ve not seen this done in practice, but imagine it to be the most
+            </ul></li>
+          <li>Build a stream management layer to handle upgrades.
+            <ul>
+              <li>I’ve not seen this done in practice, but imagine it to be the most
 practical solve this problem. However, it comes at increased development
 effort and operational complexity.</li>
-</ul></li>
-</ul>
-<p>My “Dream Stream” is a system which manages event partitioning so
+            </ul></li>
+        </ul>
+        <p>My “Dream Stream” would be a system which manages event partitioning so
 that scaling is completely opaque to consumers. And I think I have some
-good ideas for how that might work. So for the past few months, I’ve
-been trying to put my money where my mouth is.</p>
-<h2 id="realization">Realization</h2>
-<p>Look, I’ve only been a software developer for seven years. I’ve had
+good ideas for how that might work. For the past few months, I’ve
+been trying to get something working; however, I'm having a lot of problems
+working without any pre-existing constraints.</p>
+        <h2 id="realization">Realization</h2>
+        <p>Look, I’ve only been a software developer for seven years. I’ve had
 the fortunate opportunity to build some pretty neat things, but I have a
-<strong>lot</strong> left to learn. My recent venture into building the
-<a href="https://github.com/sackosoft/frieze">Dream Stream</a> has made
-clear to me an unhealthy relationship with Abstraction.</p>
-<p>The first meaningful commit was <a
-href="https://github.com/sackosoft/frieze/commit/f0a4ecb394f8438a23533cec06e4637b975d6ec3">add
+          <strong>lot</strong>
+          more to learn. In the vast majority of projects I've worked on,
+          there is already a pre-existing structure. The job is usually to learn
+          the structrue and replicate it.
+          However, My recent venture into
+          building the <a href="https://github.com/sackosoft/frieze">Dream Stream</a>
+          has made clear to me an unhealthy relationship with Abstraction.</p>
+        <p>The first meaningful commit was
+          <a href="https://github.com/sackosoft/frieze/commit/f0a4ecb394f8438a23533cec06e4637b975d6ec3">add
 the initial hosting abstractions</a>! Wow! “It’s poor design for an
 application to know about the source of configuration,” I told myself!
 “An application shouldn’t have to know that it is using a UDP socket to
 talk to another node, it should be abstracted!” After all, you never
 know how much time you can save if you decide to switch to something
 else later! Wow.</p>
-<p>Embarassingly, these hosting abstractions consumed my focus for the
+        <p>Embarassingly, these hosting abstractions consumed my focus for the
 first week or so of development on the project.</p>
-<p>Eventually, I moved on to add implementations of <a
-href="https://ferd.ca/interval-tree-clocks.html">Interval Tree
-Clocks</a> and the <a
-href="https://en.wikipedia.org/wiki/SWIM_Protocol">SWIM Protocol</a>
-with the impression that I would need these components to build the
+        <p>Eventually, I moved on to add implementations of
+          <a href="https://ferd.ca/interval-tree-clocks.html">Interval Tree Clocks</a>
+          and the
+          <a href="https://en.wikipedia.org/wiki/SWIM_Protocol">SWIM Protocol</a>
+          with the impression that I would need these components to build the
 Dream Stream.</p>
-<a href="/2025/09/25/swim-demo.gif">
-<figure>
-    <img src="/2025/09/25/swim-demo.gif"
-    alt="An animated video of the SWIM protocol simulator in the abandoned sackosoft/frieze project. A user interacts with buttons to add nodes to a circle representing a cluster. Each node that joins contacts a seed node to join the cluster. The nodes then gossip information between themselves as they run a failure detection protocol based on pinging each other. The user clicks a button to stop a node, within a few seconds some nodes learn of the node failure due to failed ping requests, they gossip this information to other nodes, and each node eventually drops the information for the stopped node." />
-</figure>
-</a>
-<p>While these were great learning experiences, they make it so
+        <a href="/2025/09/25/swim-demo.gif">
+          <figure>
+            <img src="/2025/09/25/swim-demo.gif" alt="An animated video of the SWIM protocol simulator in the abandoned sackosoft/frieze project. A user interacts with buttons to add nodes to a circle representing a cluster. Each node that joins contacts a seed node to join the cluster. The nodes then gossip information between themselves as they run a failure detection protocol based on pinging each other. The user clicks a button to stop a node, within a few seconds some nodes learn of the node failure due to failed ping requests, they gossip this information to other nodes, and each node eventually drops the information for the stopped node." />
+          </figure>
+        </a>
+        <p>While these were great learning experiences, they make it so
 painfully obvious that I only have one ‘tool in the toolbox’, so to say.
 Every step along the way I was drawing boxes and arrows; pondering
 metaphyical code responsibilities coming up with ways to split things
@@ -113,9 +117,8 @@ bucks to do it. But, man, I can’t help but feel that every box creates
 friction. Every every bundle imposes constraints. Every decision made to
 offer myself flexibility for a future decision may actually defer the
 benefit of making a decision at all.</p>
-<p>I can’t help but feel there must be a better way. I have a problem.
+        <p>I can’t help but feel there must be a better way. I have a problem.
 I’m an Abstractionholic.</p>
-            </article>
+      </article>
     </main>
-  </body>
-</html>
+  </body></html>
